@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,9 +13,17 @@ import { Ionicons } from "@expo/vector-icons";
 
 const { height: HeightScreen } = Dimensions.get("screen");
 
-export function FeedItem({ data }) {
+export function FeedItem({ data, currentVisibleItem }) {
   const video = useRef(null);
   const [status, setStatus] = useState({});
+
+  useEffect(() => {
+    if (currentVisibleItem?.id === data?.id) {
+      video.current?.playAsync();
+    } else {
+      video.current?.pauseAsync();
+    }
+  }, [currentVisibleItem]);
 
   function handlePlayer() {
     status.isPlaying ? video.current?.pauseAsync() : video.current?.playAsync();

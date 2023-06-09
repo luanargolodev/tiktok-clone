@@ -1,3 +1,4 @@
+import { useState, useRef } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -5,13 +6,23 @@ import {
   Text,
   TouchableOpacity,
   FlatList,
+  Dimensions,
 } from "react-native";
 
 import { FeedItem } from "../../components/FeedItem";
 
 import { feedItems } from "../../utils/feedItems";
 
+const { height: heightScreen } = Dimensions.get("screen");
+
 export function Home() {
+  const [showItem, setShowItem] = useState(feedItems[0]);
+  const onViewRef = useRef(({ viewableItems }) => {
+    if (viewableItems && viewableItems.length > 0) {
+      setShowItem(feedItems[viewableItems[0].index]);
+    }
+  });
+
   return (
     <View style={styles.container}>
       <View style={styles.labels}>
@@ -27,7 +38,19 @@ export function Home() {
 
       <FlatList
         data={feedItems}
-        renderItem={({ item }) => <FeedItem data={item} />}
+        renderItem={({ item }) => (
+          <FeedItem data={item} currentVisibleItem={showItem} />
+        )}
+        onViewableItemsChanged={onViewRef.current}
+        snapToAlignment="center"
+        snapToInterval={heightScreen}
+        scrollEventThrottle={200}
+        decelerationRate="fast"
+        viewabilityConfig={{
+          waitForInteraction: false,
+          viewAreaCoveragePercentThreshold: 100,
+        }}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
