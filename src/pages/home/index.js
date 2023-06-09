@@ -1,5 +1,15 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+
+import { FeedItem } from "../../components/FeedItem";
+
+import { feedItems } from "../../utils/feedItems";
 
 export function Home() {
   return (
@@ -14,6 +24,11 @@ export function Home() {
           <View style={styles.indicator}></View>
         </TouchableOpacity>
       </View>
+
+      <FlatList
+        data={feedItems}
+        renderItem={({ item }) => <FeedItem data={item} />}
+      />
     </View>
   );
 }
